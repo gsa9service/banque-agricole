@@ -601,5 +601,74 @@ window.onload = function() {
     changerLangue('fr'); 
 };
 </script>
+  <script>
+  // 1. Fonction de connexion du client
+  async function connecterClient(email, password) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      alert("Erreur de connexion : " + error.message);
+    } else {
+      alert("Connexion réussie !");
+      chargerHistoriqueClient(data.user.id);
+    }
+  }
+
+  // 2. Enregistrer une nouvelle opération/transaction
+  async function enregistrerOperation(typeOperation, montant, description) {
+    const user = (await supabase.auth.getUser()).data.user;
+
+    if (!user) {
+      alert("Vous devez être connecté pour effectuer cette opération.");
+      return;
+    }
+
+    const { data, error } = await supabase.from('transactions').insert([
+      {
+        user_id: user.id,
+        type: typeOperation,
+        montant: montant,
+        description: description,
+        created_at: new Date()
+      }
+    ]);
+
+    if (error) {
+      console.error("Erreur lors de l'enregistrement :", error.message);
+      alert("Erreur lors de l'enregistrement de l'opération.");
+    } else {
+      alert("Opération enregistrée avec succès !");
+      chargerHistoriqueClient(user.id);
+    }
+  }
+
+  // 3. Charger et affichera l'historique du client connecté
+  async function chargerHistoriqueClient(userId) {
+    const { data: transactions, error } = await supabase
+      .from('transactions')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error("Erreur lors du chargement de l'historique :", error.message);
+      return;
+    }
+
+    console.log("Historique récupéré :", transactions);
+    // Les données reçues peuvent être injectées dans votre tableau d'affichage
+  }
+
+  // 4. Vérifier automatiquement si le client est déjà connecté au chargement de la page
+  window.addEventListener('DOMContentLoaded', async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      chargerHistoriqueClient(session.user.id);
+    }
+  });
+</script>
 </body>
 </html>
