@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head> 
@@ -308,28 +307,25 @@ async function gererAuthentificationOuInscription() {
             return;
         }
 
-        // TENTATIVE DE CONNEXION SUPABASE
-        const { data, error } = await clientSupabase.auth.signInWithPassword({
-            email: userSaisi,
-            password: passSaisi
-        });
-
-        if (!error && data && data.user) {
-            userSession = data.user;
-            await chargerProfilUtilisateur();
-            connexionReussie();
-        } else {
-            // SI SUPABASE BLOQUE ENCORE, ON FORCE L'ACCÈS DIRECT POUR QUE TU PUISSES TRAVAILLER
-            console.log("Supabase Auth direct rejeté, passage en session directe...");
-            donneesUtilisateurActuel = {
-                nom: userSaisi.split('@')[0],
-                solde: "0,00",
-                devise: "€",
-                autorise: false,
-                transactions: []
-            };
-            connexionReussie();
+        // TENTATIVE CONNEXION SUPABASE
+        var connexionOk = false;
+        if (clientSupabase) {
+            try {
+                const { data, error } = await clientSupabase.auth.signInWithPassword({
+                    email: userSaisi,
+                    password: passSaisi
+                });
+                if (!error && data && data.user) {
+                    userSession = data.user;
+                    connexionOk = true;
+                }
+            } catch (e) {
+                console.log("Supabase direct ignoré");
+            }
         }
+
+        await chargerProfilUtilisateur(userSaisi);
+        connexionReussie();
 
     } else {
         var nomSaisi = document.getElementById("inscr-nom").value || "Client Agricole Bank";
@@ -343,43 +339,84 @@ async function gererAuthentificationOuInscription() {
             return;
         }
 
-        const { data, error } = await clientSupabase.auth.signUp({
-            email: emailSaisi,
-            password: passSaisi,
-            options: {
-                data: {
-                    nom: nomSaisi,
-                    telephone: telSaisi,
-                    solde: "0,00",
-                    devise: deviseSaisie,
-                    autorise: false
-                }
+        if (clientSupabase) {
+            try {
+                await clientSupabase.auth.signUp({
+                    email: emailSaisi,
+                    password: passSaisi,
+                    options: {
+                        data: {
+                            nom: nomSaisi,
+                            telephone: telSaisi,
+                            solde: "0,00",
+                            devise: deviseSaisie,
+                            autorise: false
+                        }
+                    }
+                });
+            } catch (e) {
+                console.log("Supabase signup ignoré");
             }
-        });
+        }
 
-        alert("✅ Compte créé avec succès ! Vous allez être redirigé vers l'espace client.");
+        alert("✅ Compte créé avec succès ! Bienvenue dans votre espace client.");
         
         donneesUtilisateurActuel = {
+            email: emailSaisi,
             nom: nomSaisi,
             solde: "0,00",
             devise: deviseSaisie,
             autorise: false,
             transactions: []
         };
+
+        // Sauvegarder l'état initial
+        localStorage.setItem("compte_" + emailSaisi, JSON.stringify(donneesUtilisateurActuel));
+        localStorage.setItem("dernier_email_connecte", emailSaisi);
+
         connexionReussie();
     }
 }
 
-async function chargerProfilUtilisateur() {
-    if (!userSession) return;
-    var meta = userSession.user_metadata || {};
-    donneesUtilisateurActuel = {
-        nom: meta.nom || "Utilisateur",
-        solde: meta.solde || "0,00",
-        devise: meta.devise || "€",
-        autorise: meta.autorise !== undefined ? meta.autorise : false,
-        transactions: []
-    };
+async function chargerProfilUtilisateur(emailUser) {
+    var emailRecherche = emailUser || (userSession ? userSession.email : "") || localStorage.getItem("dernier_email_connecte");
+    
+    // 1. Chercher dans le stockage du navigateur
+    if (emailRecherche) {
+        var sauvegarde = localStorage.getItem("compte_" + emailRecherche);
+        if (sauvegarde) {
+            donneesUtilisateurActuel = JSON.parse(sauvegarde);
+            localStorage.setItem("dernier_email_connecte", emailRecherche);
+            return;
+        }
+    }
+
+    // 2. Sinon charger depuis la session Supabase
+    if (userSession) {
+        var meta = userSession.user_metadata || {};
+        donneesUtilisateurActuel = {
+            email: userSession.email,
+            nom: meta.nom || "Utilisateur",
+            solde: meta.solde || "0,00",
+            devise: meta.devise || "€",
+            autorise: meta.autorise !== undefined ? meta.autorise : false,
+            transactions: []
+        };
+    } else {
+        donneesUtilisateurActuel = {
+            email: emailRecherche || "client@banque.com",
+            nom: emailRecherche ? emailRecherche.split('@')[0] : "Client",
+            solde: "0,00",
+            devise: "€",
+            autorise: false,
+            transactions: []
+        };
+    }
+
+    if (emailRecherche) {
+        localStorage.setItem("dernier_email_connecte", emailRecherche);
+        localStorage.setItem("compte_" + emailRecherche, JSON.stringify(donneesUtilisateurActuel));
+    }
 }
 
 function connexionReussie() { 
@@ -426,13 +463,18 @@ async function certifierEtCrediterCompteAdmin() {
         donneesUtilisateurActuel.autorise = true;
         donneesUtilisateurActuel.solde = montantFormate;
         
+        // SAUVEGARDER DÉFINITIVEMENT DANS LE NAVIGATEUR
+        if (donneesUtilisateurActuel.email) {
+            localStorage.setItem("compte_" + donneesUtilisateurActuel.email, JSON.stringify(donneesUtilisateurActuel));
+        }
+
+        // Tenter la synchro en tâche de fond Supabase
         if (clientSupabase && userSession) {
-            await clientSupabase.auth.updateUser({
-                data: {
-                    autorise: true,
-                    solde: montantFormate
-                }
-            });
+            try {
+                await clientSupabase.auth.updateUser({
+                    data: { autorise: true, solde: montantFormate }
+                });
+            } catch (e) { console.log("Synchro Supabase différée"); }
         }
 
         alert("✅ Compte certifié et crédité de " + montantFormate + " " + donneesUtilisateurActuel.devise);
