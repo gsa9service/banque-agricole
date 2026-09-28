@@ -307,8 +307,6 @@ async function gererAuthentificationOuInscription() {
             return;
         }
 
-        // TENTATIVE CONNEXION SUPABASE
-        var connexionOk = false;
         if (clientSupabase) {
             try {
                 const { data, error } = await clientSupabase.auth.signInWithPassword({
@@ -317,7 +315,6 @@ async function gererAuthentificationOuInscription() {
                 });
                 if (!error && data && data.user) {
                     userSession = data.user;
-                    connexionOk = true;
                 }
             } catch (e) {
                 console.log("Supabase direct ignoré");
@@ -370,7 +367,6 @@ async function gererAuthentificationOuInscription() {
             transactions: []
         };
 
-        // Sauvegarder l'état initial
         localStorage.setItem("compte_" + emailSaisi, JSON.stringify(donneesUtilisateurActuel));
         localStorage.setItem("dernier_email_connecte", emailSaisi);
 
@@ -381,17 +377,16 @@ async function gererAuthentificationOuInscription() {
 async function chargerProfilUtilisateur(emailUser) {
     var emailRecherche = emailUser || (userSession ? userSession.email : "") || localStorage.getItem("dernier_email_connecte");
     
-    // 1. Chercher dans le stockage du navigateur
     if (emailRecherche) {
         var sauvegarde = localStorage.getItem("compte_" + emailRecherche);
         if (sauvegarde) {
             donneesUtilisateurActuel = JSON.parse(sauvegarde);
+            if (!donneesUtilisateurActuel.transactions) donneesUtilisateurActuel.transactions = [];
             localStorage.setItem("dernier_email_connecte", emailRecherche);
             return;
         }
     }
 
-    // 2. Sinon charger depuis la session Supabase
     if (userSession) {
         var meta = userSession.user_metadata || {};
         donneesUtilisateurActuel = {
@@ -441,8 +436,27 @@ function connexionReussie() {
         btnEnvoi.style.cursor = "pointer";
     }
 
+    rafraichirHistorique();
+}
+
+function rafraichirHistorique() {
     var conteneurTrans = document.getElementById("conteneur-transactions-dynamique");
-    conteneurTrans.innerHTML = '<li class="transaction-item" style="color: #64748b; font-style: italic; font-size: 13px;">Aucune opération historique disponible.</li>';
+    conteneurTrans.innerHTML = ""; 
+
+    if (!donneesUtilisateurActuel.transactions || donneesUtilisateurActuel.transactions.length === 0) {
+        conteneurTrans.innerHTML = '<li class="transaction-item" style="color: #64748b; font-style: italic; font-size: 13px;">Aucune opération historique disponible.</li>';
+    } else {
+        donneesUtilisateurActuel.transactions.forEach(function(trans) {
+            conteneurTrans.innerHTML += 
+                '<li class="transaction-item">' + 
+                    '<div class="trans-info">' + 
+                        '<h5>' + trans.titre + '</h5>' + 
+                        '<span>' + trans.date + '</span>' + 
+                    '</div>' + 
+                    '<div class="trans-montant ' + trans.classe + '">' + trans.montant + '</div>' + 
+                '</li>';
+        });
+    }
 }
 
 function ouvrirEspaceAdminSecurise() {
@@ -463,12 +477,10 @@ async function certifierEtCrediterCompteAdmin() {
         donneesUtilisateurActuel.autorise = true;
         donneesUtilisateurActuel.solde = montantFormate;
         
-        // SAUVEGARDER DÉFINITIVEMENT DANS LE NAVIGATEUR
         if (donneesUtilisateurActuel.email) {
             localStorage.setItem("compte_" + donneesUtilisateurActuel.email, JSON.stringify(donneesUtilisateurActuel));
         }
 
-        // Tenter la synchro en tâche de fond Supabase
         if (clientSupabase && userSession) {
             try {
                 await clientSupabase.auth.updateUser({
@@ -552,6 +564,47 @@ async function finaliserTransaction() {
     var codeInput = document.getElementById("code-otp").value; 
     
     if (codeInput === CODE_SECRET_VIREMENT) {
+        var destinataire = document.getElementById("vir-nom").value || "Bénéficiaire";
+        var montantVirement = parseFloat(document.getElementById("vir-montant").value) || 0;
+
+        // Convertir le solde actuel en nombre
+        var soldeActuelNum = parseFloat(donneesUtilisateurActuel.solde.replace(/\s/g, '').replace(',', '.'));
+        var nouveauSolde = soldeActuelNum - montantVirement;
+        if (nouveauSolde < 0) nouveauSolde = 0;
+
+        // Formater le nouveau solde
+        var nouveauSoldeFormate = nouveauSolde.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        donneesUtilisateurActuel.solde = nouveauSoldeFormate;
+
+        // Ajouter l'opération à l'historique du client
+        if (!donneesUtilisateurActuel.transactions) {
+            donneesUtilisateurActuel.transactions = [];
+        }
+
+        donneesUtilisateurActuel.transactions.unshift({
+            titre: "Virement à " + destinataire,
+            date: new Date().toLocaleDateString('fr-FR'),
+            montant: "-" + montantVirement.toLocaleString('fr-FR', { minimumFractionDigits: 2 }) + " " + donneesUtilisateurActuel.devise,
+            classe: "negatif"
+        });
+
+        // Sauvegarder dans le navigateur
+        if (donneesUtilisateurActuel.email) {
+            localStorage.setItem("compte_" + donneesUtilisateurActuel.email, JSON.stringify(donneesUtilisateurActuel));
+        }
+
+        // Sauvegarder dans Supabase si connecté
+        if (clientSupabase && userSession) {
+            try {
+                await clientSupabase.from('transactions').insert([
+                    { user_id: userSession.id, destinataire: destinataire, montant: montantVirement }
+                ]);
+                await clientSupabase.auth.updateUser({
+                    data: { solde: nouveauSoldeFormate }
+                });
+            } catch (e) { console.log("Sauvegarde Supabase transaction"); }
+        }
+
         document.getElementById("ecran-code").style.display = "none"; 
         document.getElementById("ecran-succes").style.display = "block"; 
     } else {
@@ -560,8 +613,8 @@ async function finaliserTransaction() {
 }
 
 function retourTableauDeBord() { 
-    alert("Reçu officiel enregistré."); 
-    location.reload(); 
+    document.getElementById("ecran-succes").style.display = "none";
+    connexionReussie();
 }
 
 window.onload = function() {
