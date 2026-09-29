@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head> 
@@ -12,7 +13,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
         
-        /* HEADER ALIGNÉ EN LIGNE */
         header { 
             background-color: #0f172a; 
             color: #ffffff; 
@@ -109,17 +109,38 @@
         .input-code { width: 80%; padding: 14px; font-size: 24px; letter-spacing: 8px; text-align: center; border: 2px solid #cbd5e1; border-radius: 8px; margin: 25px 0; font-weight: bold; outline: none; }
         .input-code:focus { border-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
         .info-texte { color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
-        #ecran-succes { display: none; text-align: center; padding: 50px 40px; max-width: 550px; margin: 0 auto; }
-        .icon-succes-cadre { width: 100px; height: 100px; background-color: #ecfdf5; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.1); }
-        .svg-handshake { width: 60px; height: 60px; fill: #10b981; }
-        .titre-succes { color: #10b981; font-size: 26px; font-weight: 800; margin-bottom: 12px; }
-        .badge-confiance { background-color: #f1f5f9; color: #475569; font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 30px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 30px; }
-        .recap-ticket { background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 20px; text-align: left; margin-bottom: 30px; }
-        .recap-ligne { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
-        .recap-ligne:last-child { margin-bottom: 0; padding-top: 12px; border-top: 1px dashed #cbd5e1; }
-        .recap-label { color: #64748b; }
+        #ecran-succes { display: none; text-align: center; padding: 40px; max-width: 650px; margin: 0 auto; }
+        .icon-succes-cadre { width: 80px; height: 80px; background-color: #ecfdf5; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.1); }
+        .svg-handshake { width: 50px; height: 50px; fill: #10b981; }
+        .titre-succes { color: #10b981; font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+        .badge-confiance { background-color: #f1f5f9; color: #475569; font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 30px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px; }
+
+        /* REÇU BANCEAIRE FORMAT ÉCRAN & IMPRESSION */
+        .recu-pdf-box { background-color: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 30px; text-align: left; margin-bottom: 25px; font-size: 13px; color: #0f172a; position: relative; }
+        .recu-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #10b981; padding-bottom: 15px; margin-bottom: 20px; }
+        .recu-logo { font-size: 20px; font-weight: 800; color: #0f172a; }
+        .recu-logo span { color: #10b981; }
+        .recu-titre-doc { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700; text-align: right; }
+        .recu-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: #10b981; margin: 15px 0 8px 0; letter-spacing: 0.5px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; }
+        .recap-ligne { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
+        .recap-label { color: #64748b; font-weight: 500; }
         .recap-valeur { font-weight: 600; color: #0f172a; }
-        .recap-valeur.montant-final { color: #10b981; font-size: 18px; font-weight: 700; } 
+        .recap-valeur.montant-final { color: #10b981; font-size: 20px; font-weight: 800; } 
+        .recu-footer-stamp { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px dashed #cbd5e1; font-size: 11px; color: #94a3b8; }
+
+        /* REGLES IMPRESSION NATIVE DU NAVIGATEUR POUR LE REÇU PDF */
+        @media print {
+            body * { visibility: hidden; }
+            #recu-bancaire-imprimable, #recu-bancaire-imprimable * { visibility: visible; }
+            #recu-bancaire-imprimable {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                border: none;
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -283,7 +304,7 @@
             <button class="btn-primaire" onclick="finaliserTransaction()">Valider définitivement l'opération</button> 
         </div> 
         
-        <!-- ÉCRAN 5 : SUCCÈS --> 
+        <!-- ÉCRAN 5 : SUCCÈS AVEC REÇU COMPLET --> 
         <div id="ecran-succes"> 
             <div class="icon-succes-cadre"> 
                 <svg class="svg-handshake" viewBox="0 0 24 24"> 
@@ -296,13 +317,81 @@
                 <span class="point-vert"></span> 
                 <span>Transaction certifiée et enregistrée de manière irréversible</span> 
             </div>
-            <div class="recap-ticket"> 
-                <div class="recap-ligne"> <span class="recap-label">Bénéficiaire :</span> <span class="recap-valeur" id="recap-nom">Non spécifié</span> </div> 
-                <div class="recap-ligne"> <span class="recap-label">Numéro de compte / IBAN :</span> <span class="recap-valeur" id="recap-iban">Non spécifié</span> </div> 
-                <div class="recap-ligne"> <span class="recap-label">Statut de livraison :</span> <span class="recap-valeur" style="color: #10b981;">En cours d'acheminement</span> </div> 
-                <div class="recap-ligne"> <span class="recap-label">Montant Total Net :</span> <span class="recap-valeur montant-final" id="recap-montant">0,00 €</span> </div> 
+
+            <!-- CONTENU DU REÇU INTERBANCAIRE -->
+            <div class="recu-pdf-box" id="recu-bancaire-imprimable">
+                <div class="recu-header">
+                    <div class="recu-logo"><span>Agricole</span> Bank</div>
+                    <div class="recu-titre-doc">
+                        Récépissé Officiel de Virement<br>
+                        <span style="font-size: 10px; color: #10b981;">● TRANSACTION EXÉCUTÉE</span>
+                    </div>
+                </div>
+
+                <div class="recap-ligne">
+                    <span class="recap-label">Référence Transaction :</span>
+                    <span class="recap-valeur" id="recu-ref-num">TXN-2026-000000</span>
+                </div>
+                <div class="recap-ligne">
+                    <span class="recap-label">Date & Heure :</span>
+                    <span class="recap-valeur" id="recu-horodatage">--/--/---- --:--</span>
+                </div>
+
+                <!-- SECTION ÉMETTEUR -->
+                <div class="recu-section-title">Informations Donneur d'Ordre (Émetteur)</div>
+                <div class="recap-ligne">
+                    <span class="recap-label">Nom du Client :</span>
+                    <span class="recap-valeur" id="recu-emetteur-nom">--</span>
+                </div>
+                <div class="recap-ligne">
+                    <span class="recap-label">Banque Émettrice :</span>
+                    <span class="recap-valeur">Agricole Bank International</span>
+                </div>
+                <div class="recap-ligne">
+                    <span class="recap-label">Compte Débiteur :</span>
+                    <span class="recap-valeur">Compte Courant Principal N° 4590-XXXX</span>
+                </div>
+
+                <!-- SECTION BÉNÉFICIAIRE -->
+                <div class="recu-section-title">Informations Bénéficiaire</div>
+                <div class="recap-ligne">
+                    <span class="recap-label">Bénéficiaire :</span>
+                    <span class="recap-valeur" id="recap-nom">Non spécifié</span>
+                </div>
+                <div class="recap-ligne">
+                    <span class="recap-label">IBAN / N° de compte :</span>
+                    <span class="recap-valeur" id="recap-iban">Non spécifié</span>
+                </div>
+                <div class="recap-ligne">
+                    <span class="recap-label">Téléphone Bénéficiaire :</span>
+                    <span class="recap-valeur" id="recu-benef-tel">Non spécifié</span>
+                </div>
+
+                <!-- SECTION DÉTAILS FINANCIERS -->
+                <div class="recu-section-title">Détails Réglementaires et Montants</div>
+                <div class="recap-ligne">
+                    <span class="recap-label">Frais d'émission interbancaire :</span>
+                    <span class="recap-valeur" style="color: #10b981;">0,00 € (Inclus)</span>
+                </div>
+                <div class="recap-ligne">
+                    <span class="recap-label">Statut d'acheminement :</span>
+                    <span class="recap-valeur" style="color: #10b981;">Validé & Chiffré SSL</span>
+                </div>
+                <div class="recap-ligne" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                    <span class="recap-label" style="font-size: 15px; font-weight: bold; color: #0f172a;">Montant Total Débité :</span>
+                    <span class="recap-valeur montant-final" id="recap-montant">0,00 €</span>
+                </div>
+
+                <div class="recu-footer-stamp">
+                    Ce document atteste l'exécution ferme et définitive de l'ordre de virement susmentionné.<br>
+                    <strong>Agricole Bank S.A.</strong> - Infrastructure Sécurisée International SWIFT/SEPA.
+                </div>
             </div>
-            <button class="btn-primaire" style="background-color: #0f172a;" onclick="retourTableauDeBord()">Télécharger le reçu officiel</button> 
+
+            <div style="display: flex; gap: 12px;">
+                <button class="btn-primaire" style="background-color: #10b981;" onclick="telechargerRecuPDF()">📥 Télécharger / Imprimer le reçu (PDF)</button>
+                <button class="btn-primaire" style="background-color: #0f172a; width: 40%;" onclick="retourTableauDeBord()">Retour</button>
+            </div>
         </div>
     </div>
 </main>
@@ -377,7 +466,7 @@ async function certifierEtCrediterCompteAdmin() {
     var montantChoisi = document.getElementById("admin-credit-montant").value || "0";
 
     if (!emailCible) {
-        alert("Veuillez saisir l'adresse e-mail du compte client à certifier.");
+        alert("Veuillez saisir l'adresse e-mail du client à certifier.");
         return;
     }
 
@@ -587,10 +676,19 @@ function lancerTraitementVirement() {
     elementsDevise.forEach(function(el) { el.innerText = donneesUtilisateurActuel.devise; });
 
     document.getElementById("rappel-montant").innerText = parseFloat(montantInput).toLocaleString('fr-FR'); 
+    
+    // REMPLISSAGE DES CHAMPS DU REÇU OFFICIEL
     document.getElementById("recap-nom").innerText = nomInput || "Non spécifié"; 
     document.getElementById("recap-iban").innerText = ibanInput || "Non spécifié"; 
-    document.getElementById("recap-montant").innerText = parseFloat(montantInput).toLocaleString('fr-FR') + " " + donneesUtilisateurActuel.devise;
+    document.getElementById("recu-benef-tel").innerText = telInput || "Non spécifié";
+    document.getElementById("recap-montant").innerText = parseFloat(montantInput).toLocaleString('fr-FR', { minimumFractionDigits: 2 }) + " " + donneesUtilisateurActuel.devise;
+    document.getElementById("recu-emetteur-nom").innerText = donneesUtilisateurActuel.nom || "Client Agricole Bank";
     
+    // GENERATION HORODATAGE ET REFERENCE UNIQUE
+    var maint = new Date();
+    document.getElementById("recu-horodatage").innerText = maint.toLocaleDateString('fr-FR') + " " + maint.toLocaleTimeString('fr-FR');
+    document.getElementById("recu-ref-num").innerText = "TXN-" + maint.getFullYear() + "-" + Math.floor(100000 + Math.random() * 900000);
+
     document.getElementById("ecran-dashboard").style.display = "none"; 
     document.getElementById("ecran-chargement").style.display = "block";
     executerProgression60s(); 
@@ -679,6 +777,10 @@ async function finaliserTransaction() {
     } else {
         alert("Code de sécurité non valide. Échec de certification.");
     }
+}
+
+function telechargerRecuPDF() {
+    window.print();
 }
 
 function retourTableauDeBord() { 
