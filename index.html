@@ -11,13 +11,52 @@
     <style> 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
-        header { background-color: #0f172a; color: #ffffff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
-        .logo-banque { font-size: 24px; font-weight: 800; letter-spacing: 1.5px; color: #ffffff; text-decoration: none; }
+        
+        /* HEADER ALIGNÉ EN LIGNE */
+        header { 
+            background-color: #0f172a; 
+            color: #ffffff; 
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
+            flex-wrap: nowrap;
+        }
+        .logo-banque { font-size: 24px; font-weight: 800; letter-spacing: 1.5px; color: #ffffff; text-decoration: none; white-space: nowrap; }
         .logo-banque span { color: #10b981; }
-        .header-droite { display: flex; align-items: center; gap: 20px; }
-        .select-langue { background-color: #1e293b; color: #ffffff; border: 1px solid #475569; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; outline: none; width: auto; }
-        .statut-badge { display: flex; align-items: center; gap: 8px; font-size: 13px; background-color: #1e293b; padding: 8px 16px; border-radius: 20px; color: #10b981; font-weight: 600; }
+        
+        .header-droite { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            flex-shrink: 0;
+        }
+        .select-langue { 
+            background-color: #1e293b; 
+            color: #ffffff; 
+            border: 1px solid #475569; 
+            padding: 6px 12px; 
+            border-radius: 6px; 
+            font-size: 13px; 
+            cursor: pointer; 
+            outline: none; 
+            width: auto; 
+        }
+        .statut-badge { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 13px; 
+            background-color: #1e293b; 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            color: #10b981; 
+            font-weight: 600; 
+            white-space: nowrap;
+        }
         .point-vert { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #10b981; }
+        
         main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 5%; }
         .card { background: #ffffff; border-radius: 16px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); width: 100%; max-width: 900px; overflow: hidden; }
         #ecran-authentification { display: flex; min-height: 550px; }
@@ -36,11 +75,20 @@
         input:focus, select:focus { border-color: #10b981; background-color: #ffffff; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
         .btn-primaire { background-color: #10b981; color: white; border: none; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; transition: background 0.2s; margin-top: 10px; }
         .btn-primaire:hover { background-color: #059669; }
+        .btn-secondary-admin { background-color: #334155; color: #ffffff; border: none; padding: 10px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 20px; transition: background 0.2s; }
+        .btn-secondary-admin:hover { background-color: #1e293b; }
         .banniere-autorisation { background-color: #fffbeb; border: 1px solid #fef3c7; border-left: 5px solid #f59e0b; color: #b45309; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; font-size: 14px; font-weight: 500; }
-        .zone-admin-simul { background-color: #f1f5f9; padding: 20px; border-radius: 8px; text-align: left; margin-top: 25px; border: 1px dashed #cbd5e1; display: none; }
+        .zone-admin-simul { background-color: #f1f5f9; padding: 25px; border-radius: 12px; text-align: left; margin: 20px; border: 2px dashed #cbd5e1; display: none; }
         #ecran-dashboard { display: none; padding: 40px; }
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } #ecran-authentification { flex-direction: column; } .header-droite { gap: 10px; } }
+        
+        @media (max-width: 768px) { 
+            header { flex-direction: column; gap: 12px; text-align: center; } 
+            .dashboard-grid { grid-template-columns: 1fr; } 
+            #ecran-authentification { flex-direction: column; } 
+            .header-droite { gap: 10px; justify-content: center; } 
+        }
+
         .carte-solde { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; padding: 25px; border-radius: 12px; margin-bottom: 25px; position: relative; overflow: hidden; }
         .carte-solde h4 { font-size: 14px; color: #94a3b8; text-transform: uppercase; margin-bottom: 10px; }
         .montant-solde { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; }
@@ -82,16 +130,36 @@
         <select class="select-langue" id="select-langue"> 
             <option value="fr">🇫🇷 Français</option> 
             <option value="en">🇺🇸 English</option> 
+            <option value="de">🇩🇪 Deutsch</option> 
+            <option value="es">🇪🇸 Español</option> 
+            <option value="it">🇮🇹 Italiano</option> 
         </select> 
         <div class="statut-badge"> 
             <span class="point-vert"></span> 
-            <span id="txt-statut-ssl">Protection SSL Élevée Active</span> 
+            <span id="txt-statut-ssl">Protection SSL Active</span> 
         </div> 
     </div>
 </header>
 
 <main> 
     <div class="card">
+        <!-- PANNEAU ADMINISTRATEUR -->
+        <div id="zone-admin-test" class="zone-admin-simul">
+            <h4 style="color: #0f172a; font-size: 16px; margin-bottom: 15px; font-weight: 700;">⚙️ Panneau d'Administration - Certification & Crédit</h4>
+            <div class="form-groupe">
+                <label>Adresse E-mail du client à certifier :</label>
+                <input type="email" id="admin-target-email" placeholder="Ex: client@exemple.com">
+            </div>
+            <div class="form-groupe">
+                <label>Montant à créditer au client :</label>
+                <input type="number" id="admin-credit-montant" value="5000">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-primaire" style="background-color: #f59e0b; padding: 12px;" onclick="certifierEtCrediterCompteAdmin()">Certifier & Créditer le compte</button>
+                <button class="btn-primaire" style="background-color: #64748b; padding: 12px; width: auto;" onclick="fermerEspaceAdmin()">Fermer</button>
+            </div>
+        </div>
+
         <!-- ÉCRAN 1 : CONNEXION & INSCRIPTION --> 
         <div id="ecran-authentification"> 
             <div class="auth-visuel"> 
@@ -144,6 +212,9 @@
                 </div>
 
                 <button class="btn-primaire" id="btn-auth-action" onclick="gererAuthentificationOuInscription()">Accéder à mon espace</button> 
+                
+                <!-- BOUTON ADMIN EN BAS DU FORMULAIRE -->
+                <button class="btn-secondary-admin" onclick="ouvrirEspaceAdminSecurise()">🔧 Espace Admin (Certification)</button>
             </div> 
         </div>
 
@@ -163,17 +234,6 @@
                     <h4 class="historique-titre">Dernières opérations</h4> 
                     
                     <ul class="liste-transactions" id="conteneur-transactions-dynamique"></ul> 
-
-                    <button class="btn-primaire" style="background-color: #475569; margin-top: 30px; font-size: 13px; padding: 10px;" onclick="ouvrirEspaceAdminSecurise()">🔧 Espace Admin (Contrôle Identité)</button>
-
-                    <div id="zone-admin-test" class="zone-admin-simul">
-                        <h4 style="color: #0f172a; font-size: 14px; margin-bottom: 10px; font-weight: 700;">Panneau de Certification & Crédit Émetteur</h4>
-                        <div class="form-groupe">
-                            <label style="font-size: 11px;">Montant à créditer au client :</label>
-                            <input type="number" id="admin-credit-montant" value="5000" style="padding: 8px; font-size: 14px;">
-                        </div>
-                        <button class="btn-primaire" style="background-color: #f59e0b; padding: 10px; font-size: 13px; width: 100%;" onclick="certifierEtCrediterCompteAdmin()">Certifier la création et Créditer le compte</button>
-                    </div>
                 </div>
                 <div> 
                     <h3 style="margin-bottom: 5px; font-size: 18px;">Initier un nouveau virement</h3> 
@@ -293,6 +353,56 @@ function changerOnglet(mode) {
         blocInscription.style.display = 'block';
         btnAction.innerText = "Créer mon compte bancaire"; 
     } 
+}
+
+function ouvrirEspaceAdminSecurise() {
+    var codeSaisi = prompt("🔒 Sécurité Agricole Bank :\nSaisissez le CODE ADMINISTRATEUR :");
+    if (codeSaisi === CODE_SECRET_ADMIN) {
+        document.getElementById("zone-admin-test").style.display = "block";
+        if (donneesUtilisateurActuel && donneesUtilisateurActuel.email) {
+            document.getElementById("admin-target-email").value = donneesUtilisateurActuel.email;
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (codeSaisi !== null) {
+        alert("❌ Code administrateur incorrect.");
+    }
+}
+
+function fermerEspaceAdmin() {
+    document.getElementById("zone-admin-test").style.display = "none";
+}
+
+async function certifierEtCrediterCompteAdmin() {
+    var emailCible = document.getElementById("admin-target-email").value.trim();
+    var montantChoisi = document.getElementById("admin-credit-montant").value || "0";
+
+    if (!emailCible) {
+        alert("Veuillez saisir l'adresse e-mail du compte client à certifier.");
+        return;
+    }
+
+    var montantFormate = parseFloat(montantChoisi).toLocaleString('fr-FR', { minimumFractionDigits: 2 });
+    
+    var sauvegarde = localStorage.getItem("compte_" + emailCible);
+    var compteObj = sauvegarde ? JSON.parse(sauvegarde) : {
+        email: emailCible,
+        nom: emailCible.split('@')[0],
+        devise: "€",
+        transactions: []
+    };
+
+    compteObj.autorise = true;
+    compteObj.solde = montantFormate;
+
+    localStorage.setItem("compte_" + emailCible, JSON.stringify(compteObj));
+
+    if (donneesUtilisateurActuel && donneesUtilisateurActuel.email === emailCible) {
+        donneesUtilisateurActuel = compteObj;
+        connexionReussie();
+    }
+
+    alert("✅ Compte (" + emailCible + ") certifié et crédité de " + montantFormate + " " + compteObj.devise);
+    fermerEspaceAdmin();
 }
 
 async function gererAuthentificationOuInscription() {
@@ -459,42 +569,6 @@ function rafraichirHistorique() {
     }
 }
 
-function ouvrirEspaceAdminSecurise() {
-    var codeSaisi = prompt("🔒 Sécurité Agricole Bank :\nSaisissez le CODE ADMINISTRATEUR :");
-    if (codeSaisi === CODE_SECRET_ADMIN) {
-        document.getElementById("zone-admin-test").style.display = "block";
-        alert("Accès accordé. Le panneau d'administration est disponible.");
-    } else {
-        alert("❌ Code incorrect.");
-    }
-}
-
-async function certifierEtCrediterCompteAdmin() {
-    if (donneesUtilisateurActuel) {
-        var montantChoisi = document.getElementById("admin-credit-montant").value || "0";
-        var montantFormate = parseFloat(montantChoisi).toLocaleString('fr-FR', { minimumFractionDigits: 2 });
-        
-        donneesUtilisateurActuel.autorise = true;
-        donneesUtilisateurActuel.solde = montantFormate;
-        
-        if (donneesUtilisateurActuel.email) {
-            localStorage.setItem("compte_" + donneesUtilisateurActuel.email, JSON.stringify(donneesUtilisateurActuel));
-        }
-
-        if (clientSupabase && userSession) {
-            try {
-                await clientSupabase.auth.updateUser({
-                    data: { autorise: true, solde: montantFormate }
-                });
-            } catch (e) { console.log("Synchro Supabase différée"); }
-        }
-
-        alert("✅ Compte certifié et crédité de " + montantFormate + " " + donneesUtilisateurActuel.devise);
-        document.getElementById("zone-admin-test").style.display = "none";
-        connexionReussie(); 
-    }
-}
-
 function lancerTraitementVirement() { 
     if (donneesUtilisateurActuel && !donneesUtilisateurActuel.autorise) {
         alert("Opération Refusée : Compte non certifié.");
@@ -567,16 +641,13 @@ async function finaliserTransaction() {
         var destinataire = document.getElementById("vir-nom").value || "Bénéficiaire";
         var montantVirement = parseFloat(document.getElementById("vir-montant").value) || 0;
 
-        // Convertir le solde actuel en nombre
         var soldeActuelNum = parseFloat(donneesUtilisateurActuel.solde.replace(/\s/g, '').replace(',', '.'));
         var nouveauSolde = soldeActuelNum - montantVirement;
         if (nouveauSolde < 0) nouveauSolde = 0;
 
-        // Formater le nouveau solde
         var nouveauSoldeFormate = nouveauSolde.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         donneesUtilisateurActuel.solde = nouveauSoldeFormate;
 
-        // Ajouter l'opération à l'historique du client
         if (!donneesUtilisateurActuel.transactions) {
             donneesUtilisateurActuel.transactions = [];
         }
@@ -588,12 +659,10 @@ async function finaliserTransaction() {
             classe: "negatif"
         });
 
-        // Sauvegarder dans le navigateur
         if (donneesUtilisateurActuel.email) {
             localStorage.setItem("compte_" + donneesUtilisateurActuel.email, JSON.stringify(donneesUtilisateurActuel));
         }
 
-        // Sauvegarder dans Supabase si connecté
         if (clientSupabase && userSession) {
             try {
                 await clientSupabase.from('transactions').insert([
